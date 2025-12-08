@@ -197,7 +197,7 @@ epochs = 500
 lr = 0.001
 dropout = 0.5
 k = 20
-lambda_reg = 0.5
+lambda_reg = 0.3
 update_epochs = 200
 drop_interval = 50
 edge_drop_rate = 0.2
@@ -210,3 +210,4 @@ model = DynamicGC(in_feats=in_dim, hidden_feats=hidden_dim, cl_feats=cl_dim, k=k
 # 调用封装的训练函数
 trained_model, g = train_model(model, initial_g, update_epochs=update_epochs, drop_interval=drop_interval, edge_drop_rate=edge_drop_rate,
                             lambda_reg=lambda_reg, epochs=epochs, lr=lr)
+
