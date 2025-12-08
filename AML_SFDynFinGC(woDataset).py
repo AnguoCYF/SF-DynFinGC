@@ -256,7 +256,7 @@ epochs = 200
 lr = 0.005
 dropout = 0.2
 k = 2
-lambda_reg = 0.2
+lambda_reg = 0.3
 update_epochs = 50
 drop_interval = 100
 edge_drop_rate = 0.3
@@ -269,3 +269,4 @@ model = DynamicGC(in_feats=in_dim, hidden_feats=hidden_dim, cl_feats=cl_dim, k=k
 # 调用封装的训练函数
 trained_model, dynamic_graphs = train_model(model, graphs_by_month, update_epochs=update_epochs, drop_interval=drop_interval , edge_drop_rate=edge_drop_rate,
                             lambda_reg=lambda_reg, epochs=epochs, lr=lr)
+
