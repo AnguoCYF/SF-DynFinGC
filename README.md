@@ -59,3 +59,60 @@ The comprehensive results in the table above further strengthen the conclusions 
 In contrast, the performance of baseline methods often exhibits significant variability when the downstream GNN classifier is changed. For example, some methods that perform moderately well with GCN show a drop in performance when paired with GAT or GIN. This indicates that their constructed graphs may be over-tuned to a specific message-passing scheme.
 
 The consistent superiority of SF-DynFinGC across diverse and powerful GNN backbones validates that our method constructs a more fundamentally sound, informative, and versatile graph structure. This robust performance underscores the value of integrating domain-specific priors (scale-free properties) and a principled global edge selection strategy for dynamic graph construction in FAD.
+
+### Hyperparameter Sensitivity Study
+
+To demonstrate the robustness of SF-DynFinGC and justify our parameter selection, we evaluate how performance changes under varying hyperparameter settings. We use Accuracy and Macro-F1 on the AML Bank dataset as primary indicators.
+
+The figure below illustrates sensitivity curves for three key parameters:
+1.  The power-law exponent $\gamma$.
+2.  The regularization weight $\lambda$.
+3.  The difference in neighbor sampling $\Delta k = k_{\text{init}} - k_{\text{final}}$.
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="assets/Fig_gamma.png" alt="Sensitivity to Gamma" width="100%" />
+        <br />
+        <b>(a) Sensitivity to Power-Law Exponent $\gamma$</b>
+      </td>
+      <td align="center">
+        <img src="assets/Fig_lambda.png" alt="Sensitivity to Lambda" width="100%" />
+        <br />
+        <b>(b) Sensitivity to Regularization Weight $\lambda$</b>
+      </td>
+      <td align="center">
+        <img src="assets/Fig_k.png" alt="Sensitivity to k" width="100%" />
+        <br />
+        <b>(c) Sensitivity to Top-k Range ($\Delta k$)</b>
+      </td>
+    </tr>
+  </table>
+  <p>
+    <em>
+      <b>Figure: Hyperparameter sensitivity of SF-DynFinGC with a GCN classifier on the AML Bank dataset.</b><br>
+      Panels (a)–(c) show how Accuracy and Macro-F1 change with the power-law exponent $\gamma$, the regularization weight $\lambda$, and the Top-$k$ range $\Delta k$, respectively. The results illustrate that the model remains stable within moderate ranges.
+    </em>
+  </p>
+</div>
+
+#### Analysis of Results
+
+**Sensitivity to Power-Law Exponent ($\gamma$)**
+Panel (a) plots $\gamma$ from 0 to 5 against Macro-F1 and accuracy. Macro-F1 peaks near $\gamma=2.5$ at about 0.77, coinciding with a moderate accuracy of roughly 0.95. Lower or higher exponents yield lower F1 scores. This indicates that an excessively small $\gamma$ concentrates edges around too few hub nodes, while an overly large exponent limits hub dominance. These observations align with the notion that many real financial networks exhibit degree exponents between 2 and 3 (Barabási et al., *Science* '99), supporting our choice of $\gamma \approx 2.5$ to maintain a balanced distribution of hubs and peripheral nodes.
+
+**Sensitivity to Regularization Weight ($\lambda$)**
+Panel (b) shows that mid-range $\lambda$ values from 0.4 to 0.5 achieve Macro-F1 scores exceeding 0.77. This suggests that a moderate emphasis on scale-free enforcement best complements the classification goal.
+* **Too small $\lambda$**: The model underexplores graph structure alignment, weakening FAD.
+* **Too large $\lambda$**: The structural constraint overshadows the detection objective, causing a performance decline.
+This underscores the importance of balancing structural regularization with direct anomaly detection.
+
+**Sensitivity to Top-k Range ($\Delta k$)**
+Panel (c) explores $\Delta k$ from 0 to 30. Macro-F1 rises above 0.75 around $\Delta k=11$.
+* Smaller ranges (< 3) or extremely large gaps (> 20) result in a reduction of at least 5% in F1.
+* This indicates that either insufficient or overly aggressive edge transitions impede stable graph evolution.
+A moderate $\Delta k$ preserves enough newly added edges while preventing the adjacency matrix from becoming excessively dense or unstable, facilitating the discovery of both local and cross-cutting connections.
+
+**Conclusion**
+Overall, these findings confirm that each hyperparameter plays a specific role in maintaining appropriate spatio-temporal relationships. By aligning these factors—$\gamma \approx 2.5$ for realism, moderate $\lambda$ for balance, and tuned $\Delta k$ for stability—SF-DynFinGC effectively captures the nuanced relational patterns in financial systems.
